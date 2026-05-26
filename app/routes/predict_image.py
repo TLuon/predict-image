@@ -4,7 +4,7 @@ import cv2
 
 from app.services.image_processing import extract_feature
 from app.services.model_loader import load_model
-from app.utils.disease_info import disease_info
+# from app.utils.disease_info import disease_info
 
 router = APIRouter()
 
@@ -49,8 +49,7 @@ async def predict_image(file: UploadFile = File(...)):
             "prediction": pred,
             "confidence": round(conf, 3),
             "probabilities": probabilities,
-            "description": disease_info.get(pred, "Không có mô tả"),
-            "note": "AI chỉ mang tính chất tham khảo, không thay thế bác sĩ",
+            # "description": disease_info.get(pred, "Không có mô tả"),
         }
 
     except Exception as e:
