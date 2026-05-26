@@ -27,25 +27,30 @@ async def predict_image(file: UploadFile = File(...)):
         feature = extract_feature(img)
 
         # 🔥 SCALE (BẮT BUỘC)
-        feature = scaler.transform([feature])   # shape: (1, n_features)
+        feature = scaler.transform([feature])  # shape: (1, n_features)
 
         # ===== PREDICT =====
         probs = model.predict_proba(feature)[0]
         pred_index = np.argmax(probs)
 
         pred = model.classes_[pred_index]
-        conf = float(probs[pred_index])
+        conf = round(float(probs[pred_index]), 5)
+        probabilities = {
+            cls: round(float(prob), 5)
+            for cls, prob in zip(model.classes_, probs)
+        }
 
         # ===== THRESHOLD =====
-        if conf < 0.4:   # bạn có thể chỉnh 0.3–0.5
+        if conf < 0.4:  # bạn có thể chỉnh 0.3–0.5
             pred = "Không thể xác định chính xác, vui lòng thử lại với ảnh khác"
 
         # ===== RESPONSE =====
         return {
             "prediction": pred,
             "confidence": round(conf, 3),
+            "probabilities": probabilities,
             "description": disease_info.get(pred, "Không có mô tả"),
-            "note": "AI chỉ mang tính chất tham khảo, không thay thế bác sĩ"
+            "note": "AI chỉ mang tính chất tham khảo, không thay thế bác sĩ",
         }
 
     except Exception as e:
