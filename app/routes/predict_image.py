@@ -5,7 +5,7 @@ import cv2
 from app.services.image_processing import extract_feature
 from app.services.model_loader import load_model
 # from app.utils.disease_info import disease_info
-
+from app.database import get_description
 router = APIRouter()
 
 # 🔥 Load cả model + scaler
@@ -39,6 +39,8 @@ async def predict_image(file: UploadFile = File(...)):
             cls: round(float(prob), 5)
             for cls, prob in zip(model.classes_, probs)
         }
+        # ===== LẤY DESCRIPTION TỪ DATABASE =====
+        description = get_description(pred)
 
         # ===== THRESHOLD =====
         if conf < 0.4:  # bạn có thể chỉnh 0.3–0.5
@@ -49,6 +51,7 @@ async def predict_image(file: UploadFile = File(...)):
             "prediction": pred,
             "confidence": round(conf, 3),
             "probabilities": probabilities,
+            "description": description,
             # "description": disease_info.get(pred, "Không có mô tả"),
         }
 
