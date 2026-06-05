@@ -43,7 +43,7 @@ async def predict_image(file: UploadFile = File(...)):
         description = get_description(pred)
 
         # ===== THRESHOLD =====
-        if conf < 0.4:  # bạn có thể chỉnh 0.3–0.5
+        if conf < 0.3:  # bạn có thể chỉnh 0.3–0.5
             pred = "Không thể xác định chính xác, vui lòng thử lại với ảnh khác"
 
         # ===== RESPONSE =====
